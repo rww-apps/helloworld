@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <title>Hello World -- SPARQL!</title>
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+        <link href="assets/css/bootstrap-glyphicons.css" type="text/css" rel="stylesheet">
+        <!--[if lt IE 9]>
+          <script src="assets/js/html5.js"></script>
+        <![endif]-->
+
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        <style type="text/css" id="bsCss">
+        /* override bootstrap styles */
+        body {  padding-top: 50px;}
+        </style>
+    </head>
+    <body>
+    <div class="container">    
+        <div class="navbar navbar-inverse navbar-fixed-top">  
+            <div class="container">    
+                <div class="navbar-header">      
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">        
+                <span class="icon-bar"></span>        
+                <span class="icon-bar"></span>        
+                <span class="icon-bar"></span>      
+                </button>      
+                <a class="navbar-brand" href="#">Hello World!</a>    
+            </div>    
+            <div class="collapse navbar-collapse">      
+            <ul class="nav navbar-nav">        
+                <li><a href="hello.html">HTTP PUT</a></li>        
+                <li><a href="hellopatch.html">HTTP PATCH</a></li>        
+                <li class="active"><a href="hellosparql.html">SPARQL UPDATE</a></li>             </ul>    
+            </div><!--/.nav-collapse -->  
+        </div>
+    </div>
+    <div class="container">    
+        <div>    
+        <h1>Hello World -- SPARQL!</h1>    
+        <div id="counter">
+        </div>
+        <hr>
+        <div>
+        Use the following code to <strong>write</strong> to your data space via SPARQL:
+        <pre>
+
+        var c = location.origin + '/counter';
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', c, false);
+        xhr.setRequestHeader('Content-Type','	application/sparql-update');
+        xhr.send('DELETE DATA { <'+c+'> <'+c+'> "' + counter + '" . }');
+
+        xhr.open('POST', c, false);
+        xhr.setRequestHeader('Content-Type','	application/sparql-update');
+        xhr.send('INSERT DATA { <'+c+'> <'+c+'> "' + (counter+1) + '" . }');
+        </pre>
+        <hr>
+        Use the following code to <strong>read</strong> from your data space:
+        <pre>
+        var c = location.origin + '/counter';
+        $.getJSON(c , function(data){
+
+          if (data[c]) {
+            counter = parseInt(data[c][c][0]['value']);
+          }
+
+        });
+        </pre>
+        <hr>
+        </div>
+    </div>
+
+
+    <script type='text/javascript' src="assets/js/jquery.min.js"></script>    
+    <script type='text/javascript' src="assets/js/bootstrap.min.js"></script>        
+    <script>
+
+    var init = function() {
+
+      // counter URI
+      var c = location.origin + '/counter';
+      var counter = 0;
+
+      $.getJSON(c , function(data){
+
+        // get counter value and increment
+        if (data[c]) {
+          counter = parseInt(data[c][c][0]['value']);
+        }
+
+        // update page
+        $('#counter').append('<p>You are visitor number <strong>' + (counter+1) + '</strong> to this page.</p>');
+
+        // write back counter
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', c, false);
+        xhr.setRequestHeader('Content-Type','	application/sparql-update; charset=UTF-8');
+        xhr.send('DELETE DATA { <'+c+'> <'+c+'> "' + counter + '" . }');
+
+        xhr.open('POST', c, false);
+        xhr.setRequestHeader('Content-Type','	application/sparql-update; charset=UTF-8');
+        xhr.send('INSERT DATA { <'+c+'> <'+c+'> "' + (counter+1) + '" . }');
+
+      });
+    }
+
+    $(document).ready(init);
+
+    </script>
+
+    </body>
+
+</html>
